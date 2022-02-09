@@ -22,15 +22,12 @@ def Nasdaq_GetCSV():
 
     return data
 
-nasdaq_data = Nasdaq_GetCSV()
-companies = pd.read_csv(io.StringIO(nasdaq_data))
+nasdaq_list = Nasdaq_GetCSV()
+companies = pd.read_csv(io.StringIO(nasdaq_list))
 
 symbols = companies['Symbol'].tolist()
-
 symbols = ['AAPL']
-
 pprint(symbols)
-
 
 # create empty dataframe
 #stock_final = pd.DataFrame()
@@ -39,11 +36,9 @@ start = datetime.datetime(2020,2,1)
 end = datetime.datetime(2020,10,11)
 
 # iterate over each symbol
-for i in symbols:  
-    
+for i in symbols:
     # print the symbol which is being downloaded
     #print( str(symbols.index(i)) + str(' : ') + i, sep=',', end=',', flush=True)  
-
     try:
         # download the stock price 
         stock = []
