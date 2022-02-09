@@ -10,4 +10,6 @@ Install
 
 Tutorial
 ========
+* https://aroussi.com/post/python-yahoo-finance
+* https://github.com/marcusschiesser/intraday
 * https://towardsdatascience.com/downloading-historical-stock-prices-in-python-93f85f059c1f
