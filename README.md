@@ -1,8 +1,5 @@
 # Roadmap
 
-## Data
-* Fetching and caching daily data from Yahoo Finance
-
 ## Equity
 * Ticker
 * Other info from Yahoo Finance
@@ -22,6 +19,12 @@
 
 ## Portfolio
 * List of Equities
+
+
+# Done (at least somewhat functional)
+
+## Data
+* Fetching and caching daily data from Yahoo Finance
 
 
 # Install

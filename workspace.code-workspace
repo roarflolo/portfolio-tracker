@@ -1,12 +1,12 @@
 {
-	"folders": [
-		{
-			"path": "."
-		}
-	],
+	"folders": [{
+		"path": "."
+	}],
 	"settings": {
 		"files.exclude": {
-			"venv3/": true
-		}
+			"venv3/": true,
+			"__pycache__/": true
+		},
+		"python.pythonPath": "venv3/bin/python3.9"
 	}
 }
