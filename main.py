@@ -7,6 +7,8 @@ import io
 import os
 from pprint import pprint
 import data
+from tradelog import TradeLog
+from tradelog import GainLoss
 
 
 def Nasdaq_GetCSV():
@@ -66,3 +68,32 @@ d = data.update_ticker("AAPL")
 d = data.update_ticker("MSFT")
 d = data.update_ticker("ROKU")
 # pprint(d)
+
+last_day = data.get_lastday(d)
+# pprint(last_day)
+v = data.get_last(d)
+print(v)
+
+v = data.get(d, datetime.datetime(2022, 2, 14))
+print(v)
+
+
+#p = Portfolio("Growth")
+t1 = TradeLog()
+t1.buy("AAPL", datetime.datetime(2020, 2, 1), 10, 123.45)
+t1.buy("AAPL", datetime.datetime(2020, 2, 2), 10, 121.45)
+t1.sell("AAPL", datetime.datetime(2020, 2, 3), 20, 124.45)
+
+t1.buy("MSFT", datetime.datetime(2020, 1, 10), 10, 1.0)
+t1.buy("MSFT", datetime.datetime(2020, 1, 12), 10, 2.0)
+t1.sell("MSFT", datetime.datetime(2020, 1, 13), 19, 3.0)
+t1.save("data/test-1.csv")
+# p.add(t1)
+# print(p)
+
+t2 = TradeLog()
+t2.load("data/test-1.csv")
+t2.save("data/test-2.csv")
+
+gl = t2.calc_gain_loss("MSFT", 3.0)
+print(gl)
