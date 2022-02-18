@@ -64,36 +64,74 @@ def Test():
     # pprint(stock_final.head())
 
 
-d = data.update_ticker("AAPL")
-d = data.update_ticker("MSFT")
-d = data.update_ticker("ROKU")
+#d = data.update_ticker("AAPL")
+#d = data.update_ticker("MSFT")
+#d = data.update_ticker("ROKU")
 # pprint(d)
 
-last_day = data.get_lastday(d)
+#last_day = data.get_lastday(d)
 # pprint(last_day)
-v = data.get_last(d)
-print(v)
+#v = data.get_last(d)
+# print(v)
 
-v = data.get(d, datetime.datetime(2022, 2, 14))
-print(v)
+#v = data.get(d, datetime.datetime(2022, 2, 14))
+# print(v)
 
 
-#p = Portfolio("Growth")
-t1 = TradeLog()
-t1.buy("AAPL", datetime.datetime(2020, 2, 1), 10, 123.45)
-t1.buy("AAPL", datetime.datetime(2020, 2, 2), 10, 121.45)
-t1.sell("AAPL", datetime.datetime(2020, 2, 3), 20, 124.45)
+def create_test_portfolio():
+    portfolio = TradeLog("Test1")
+    portfolio_filename = "data/portfolio-test1.csv"
 
-t1.buy("MSFT", datetime.datetime(2020, 1, 10), 10, 1.0)
-t1.buy("MSFT", datetime.datetime(2020, 1, 12), 10, 2.0)
-t1.sell("MSFT", datetime.datetime(2020, 1, 13), 19, 3.0)
-t1.save("data/test-1.csv")
-# p.add(t1)
-# print(p)
+    if os.path.exists(portfolio_filename):
+        portfolio.load(portfolio_filename)
 
-t2 = TradeLog()
-t2.load("data/test-1.csv")
-t2.save("data/test-2.csv")
+    tickers = [
+        {"name": "AAPL", "date": datetime.datetime(2020, 1, 2)},
+        {"name": "MSFT", "date": datetime.datetime(2020, 1, 2)},
+        {"name": "GOOG", "date": datetime.datetime(2020, 1, 2)},
+        {"name": "SPY", "date": datetime.datetime(2020, 1, 2)},
+        {"name": "QQQ", "date": datetime.datetime(2020, 1, 2)},
+        {"name": "SQ", "date": datetime.datetime(2020, 1, 2)},
+        {"name": "TWLO", "date": datetime.datetime(2020, 1, 2)},
+        {"name": "NET", "date": datetime.datetime(2020, 1, 2)},
+    ]
+    for ticker in tickers:
+        name = ticker["name"]
+        if name not in portfolio.trades.keys():
+            d = data.update_ticker(name)
+            v = data.get(d, ticker["date"])
+            portfolio.buy(name, v["date"], 1, v["close"])
 
-gl = t2.calc_gain_loss("MSFT", 3.0)
-print(gl)
+    portfolio.save(portfolio_filename)
+
+    return portfolio
+
+
+def dsfsdjhfgs():
+    #p = Portfolio("Growth")
+    t1 = TradeLog("Test1")
+    t1.buy("AAPL", datetime.datetime(2020, 2, 1), 10, 123.45)
+    t1.buy("AAPL", datetime.datetime(2020, 2, 2), 10, 121.45)
+    t1.sell("AAPL", datetime.datetime(2020, 2, 3), 20, 124.45)
+
+    t1.buy("MSFT", datetime.datetime(2020, 1, 10), 10, 1.0)
+    t1.buy("MSFT", datetime.datetime(2020, 1, 12), 10, 2.0)
+    t1.sell("MSFT", datetime.datetime(2020, 1, 13), 19, 3.0)
+    t1.save("data/test-1.csv")
+    # p.add(t1)
+    # print(p)
+
+    t2 = TradeLog("Test2")
+    t2.load("data/test-1.csv")
+    t2.save("data/test-2.csv")
+
+    gl = t2.calc_gain_loss("MSFT", 3.0)
+    print(gl)
+
+
+p = create_test_portfolio()
+for name in p.trades.keys():
+    d = data.update_ticker(name)
+    v = data.get_last(d)
+    gl = p.calc_gain_loss(name, v["close"])
+    print(gl)

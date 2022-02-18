@@ -8,14 +8,39 @@ def Currency(num):
     return "${:,.2f}".format(num)
 
 
+def Pct(num):
+    return "{:,.2f}%".format(num * Decimal(100.0))
+
+
 class GainLoss:
     def __init__(self, name):
         self.name = name
+        self.realizedPctSum = Decimal(0)
+        self.realizedPctCount = Decimal(0)
+        self.unrealizedPctSum = Decimal(0)
+        self.unrealizedPctCount = Decimal(0)
         self.realized = Decimal(0)
         self.unrealized = Decimal(0)
 
+    def add_realized(self, quantity, buy, sell):
+        self.realizedPctSum += (sell / buy) - 1
+        self.realizedPctCount += Decimal(1)
+        self.realized += quantity * (sell - buy)
+
+    def add_unrealized(self, quantity, buy, sell):
+        self.unrealizedPctSum += (sell / buy) - 1
+        self.unrealizedPctCount += Decimal(1)
+        self.unrealized += quantity * (sell - buy)
+
     def __str__(self):
-        return f'{self.name} - Realized Gain: {Currency(self.realized)}, Unrealized Gain: {Currency(self.unrealized)}'
+        realizedPct = Decimal(0)
+        unrealizedPct = Decimal(0)
+        if self.realizedPctCount > 0:
+            realizedPct = self.realizedPctSum / self.realizedPctCount
+        if self.unrealizedPctCount > 0:
+            unrealizedPct = self.unrealizedPctSum / self.unrealizedPctCount
+        # return f'{self.name} - Realized Gain: {Currency(self.realized)} ({Pct(realizedPct)}), Unrealized Gain: {Currency(self.unrealized)} ({Pct(unrealizedPct)})'
+        return f'{self.name} - Realized Gain: {Pct(realizedPct)}, Unrealized Gain: {Pct(unrealizedPct)}'
 
 
 class Trade:
@@ -31,7 +56,8 @@ class Trade:
 
 
 class TradeLog:
-    def __init__(self):
+    def __init__(self, name):
+        self.name = name
         self.trades = {}
 
     def insert(self, name, type, date, quantity, price):
@@ -75,13 +101,13 @@ class TradeLog:
                         get = min(top.quantity, quantity)
                         top.quantity -= get
                         quantity -= get
-                        result.realized += get * (t.price - top.price)
+                        result.add_realized(get, top.price, t.price)
                         if top.quantity > 0:
                             stack.append(top)
 
             while len(stack) > 0:
                 top = stack.pop()
-                result.unrealized += top.quantity * (currentValue - top.price)
+                result.add_unrealized(top.quantity, top.price, currentValue)
 
         return result
 
@@ -94,7 +120,7 @@ class TradeLog:
                         [
                             t.name,
                             t.type,
-                            t.date,
+                            t.date.date(),
                             t.quantity,
                             t.price
                         ])
@@ -105,7 +131,8 @@ class TradeLog:
             for line in r:
                 name = line[0]
                 type = line[1]
-                date = datetime.datetime.strptime(line[2], '%Y-%m-%d %H:%M:%S')
+                #date = datetime.datetime.strptime(line[2], '%Y-%m-%d %H:%M:%S')
+                date = datetime.datetime.strptime(line[2], '%Y-%m-%d')
                 quantity = Decimal(line[3])
                 price = Decimal(line[4])
                 self.insert(name, type, date, quantity, price)

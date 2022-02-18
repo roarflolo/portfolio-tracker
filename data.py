@@ -45,12 +45,13 @@ def get_cache(ticker):
 
 def get_lastday(df):
     if len(df) == 0:
-        return date.today() - timedelta(days=365)
+        return date.today() - timedelta(days=5*365)
     max = df.index.max()
     return max.date()
 
 
 def get(df, date):
+    # TODO: If date doesn't exist, add a day at a time until it does
     return {"date": date.date(), "close": Decimal(df.loc[date, 'Close'])}
 
 
