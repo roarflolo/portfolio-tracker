@@ -20,6 +20,11 @@
 ## Portfolio
 * List of Equities
 
+## HTML and Charts
+* https://github.com/Knio/dominate
+* https://jinja.palletsprojects.com/en/3.0.x/
+* https://dygraphs.com/index.html
+
 
 # Done (at least somewhat functional)
 
